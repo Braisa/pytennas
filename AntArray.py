@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 class AntArray:
     
-    def __init__(self, lam : float, d : float, w = None, N = None, deltas = None):
+    def __init__(self, lam : float, d = None, w = None, N = None, deltas = None):
         
         """
         
@@ -18,8 +18,8 @@ class AntArray:
         ----------
             lam : float
                 Wavelength.
-            d : float
-                Element spacing for equally spaced arrays.
+            d : float, None
+                Element spacing for equally spaced arrays. If no value is specified, then a standard half-wavelength element spacing will be assumed.
             w : array, None
                 Feed coefficients. If no array is input, then uniform illumination will be assumed.
             N : int, None
@@ -31,23 +31,28 @@ class AntArray:
         
         self.lam = lam
         self.num = 2*np.pi / lam
-        self.d = d
+        
+        # Element spacing
+        if not d:
+            self.d = lam / 2
+        else:
+            self.d = d
         
         # Illumination
         if not w:
             self.w = np.ones(N)
             self.N = N
-        else:
+        elif not N:
             self.w = w
             self.N = np.size(w)
         
         # Create element position array
         if not deltas:
-            self.deltas = np.zeros_like(w)
-            self.pos = d * np.arange(self.N)
+            self.deltas = np.zeros_like(self.w)
+            self.pos = self.d * np.arange(self.N)
         else:
             self.deltas = deltas
-            self.pos = d * np.arange(self.N) + deltas
+            self.pos = self.d * np.arange(self.N) + deltas
         
     def get_AF(self, theta = np.linspace(0, 2*np.pi, 1000), alpha = 0.):
         
@@ -91,4 +96,3 @@ class AntArray:
         
         dBi = 10 * np.log10(AF / np.max(AF))
         return np.clip(dBi, clampdBi, None)
-        

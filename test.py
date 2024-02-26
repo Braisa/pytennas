@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import AntArray as ant
 
-arr = ant.AntArray(lam = 1, d = .5, N = 10)
+arr = ant.AntArray(lam = 1, N = 10)
 ang = np.linspace(0, 2*np.pi, 1000)
 g = arr.get_relative_power(arr.get_AF(ang, alpha = np.pi/2), clampdBi = -30)
 
