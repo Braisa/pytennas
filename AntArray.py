@@ -33,21 +33,24 @@ class AntArray:
         self.num = 2*np.pi / lam
         
         # Element spacing
-        if not d:
+        if d is None:
             self.d = lam / 2
         else:
             self.d = d
         
         # Illumination
-        if not w:
+        if w is None and deltas is None:
             self.w = np.ones(N)
             self.N = N
-        elif not N:
+        elif deltas is None:
             self.w = w
             self.N = np.size(w)
+        else:
+            self.w = np.ones(np.size(deltas))
+            self.N = np.size(deltas)
         
         # Create element position array
-        if not deltas:
+        if deltas is None:
             self.deltas = np.zeros_like(self.w)
             self.pos = self.d * np.arange(self.N)
         else:

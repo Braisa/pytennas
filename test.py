@@ -13,6 +13,12 @@ arr = ant.AntArray(lam = 1, N = 10)
 ang = np.linspace(0, 2*np.pi, 1000)
 g = arr.get_relative_power(arr.get_AF(ang, alpha = np.pi/2), clampdBi = -30)
 
+dels = arr.estimate_deltas(theta = ang, diff = .5*arr.num*arr.d*np.cos(ang))
+arr2 = ant.AntArray(lam = 1, deltas = dels)
+g2 = arr.get_relative_power(arr2.get_AF(ang, alpha = np.pi/2), clampdBi = -30)
+
 fig, ax = plt.subplots(subplot_kw = {"projection" : "polar"})
 ax.plot(ang, g)
+fig, ax = plt.subplots(subplot_kw = {"projection" : "polar"})
+ax.plot(ang, g2)
 plt.show()
