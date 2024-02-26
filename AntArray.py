@@ -23,15 +23,14 @@ class AntArray:
             w : array, None
                 Feed coefficients. If no array is input, then uniform illumination will be assumed.
             N : int, None
-                Number of elements. Redundant when feed coefficients are input. Necessary when no feed
-                coefficients are specificed, in which case uniform illumination is assumed.
+                Number of elements. Redundant when feed coefficients are input. Necessary when no feed coefficients are specificed, in which case uniform illumination is assumed.
             deltas : array, None
-                Difference between each element's position with respect to its position in an equally
-                spaced array. By default an equally spaced array is assumed.
+                Difference between each element's position with respect to its position in an equally spaced array. By default an equally spaced array is assumed.
         
         """
         
         self.lam = lam
+        self.num = 2*np.pi / lam
         self.d = d
         
         # Illumination
@@ -49,3 +48,47 @@ class AntArray:
         else:
             self.deltas = deltas
             self.pos = d * np.arange(self.N) + deltas
+        
+    def get_AF(self, theta = np.linspace(0, 2*np.pi, 1000), alpha = 0.):
+        
+        """
+        
+        Parameters
+        ----------
+            theta : array
+                Visible angular range. Array factor will be computed for the specified angles.
+            alpha : float
+                Main lobe angular position. By default it is zero.
+        
+        Returns
+        -------
+            AF : array
+                Array factor, expressed as a function of polar angle theta.
+        
+        """
+        
+        eta = self.num * (np.cos(theta) - np.cos(alpha))
+        AF = np.sum(self.w[n] * np.exp(1j*self.pos[n]*eta) for n in np.arange(self.N))
+        return AF
+    
+    def get_relative_power(self, AF, clampdBi = -20.):
+        
+        """
+        
+        Parameters
+        ----------
+            AF : array
+                Array factor.
+            clampdBi : float
+                Minimum to which lower values of relative power are clamped. Allows selection of a region of interest.
+        
+        Returns
+        -------
+            dBi : array
+                Relative power in decibels over an isotropic radiator. Expressed as a function of the same argument as AF.
+        
+        """
+        
+        dBi = 10 * np.log10(AF / np.max(AF))
+        return np.clip(dBi, clampdBi, None)
+        
