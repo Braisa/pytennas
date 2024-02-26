@@ -96,3 +96,27 @@ class AntArray:
         
         dBi = 10 * np.log10(AF / np.max(AF))
         return np.clip(dBi, clampdBi, None)
+    
+    def estimate_deltas(self, theta = np.linspace(0, 2*np.pi, 1000), diff = None):
+        
+        """
+        
+        Parameters
+        ----------
+            theta : array
+                Visible angular range, in radians.
+            diff : array
+                Difference between the array factor of an unevenly spaced array and an evenly spaced array with the same parameters. Expressed as a function of psi.
+        
+        Returns
+        -------
+            deltas : array
+                Difference between each element's position relative to its position in an evenly spaced array.
+        
+        """
+        
+        psi = self.num * self.d * np.cos(theta)
+        deltas = np.zeros(self.N)
+        for n in np.arange(self.N):
+            deltas[n] = self.w[n]**-1 * -1j/(2*self.num) * np.trapz(diff / psi * np.exp(-1j*n*psi), psi)
+        return deltas
