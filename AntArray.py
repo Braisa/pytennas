@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 class AntArray:
     
-    def __init__(self, lam, d, w = None, N = None, deltas = None):
+    def __init__(self, lam : float, d : float, w = None, N = None, deltas = None):
         
         """
         
@@ -56,9 +56,9 @@ class AntArray:
         Parameters
         ----------
             theta : array
-                Visible angular range. Array factor will be computed for the specified angles.
+                Visible angular range, in radians. Array factor will be computed for the specified angles.
             alpha : float
-                Main lobe angular position. By default it is zero.
+                Main lobe angular position, in radians. By default it is zero.
         
         Returns
         -------
@@ -69,7 +69,7 @@ class AntArray:
         
         eta = self.num * (np.cos(theta) - np.cos(alpha))
         AF = np.sum(self.w[n] * np.exp(1j*self.pos[n]*eta) for n in np.arange(self.N))
-        return AF
+        return np.abs(AF)
     
     def get_relative_power(self, AF, clampdBi = -20.):
         
