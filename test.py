@@ -34,6 +34,4 @@ arr = ant.AntArray(lam = 1, w = feed*np.exp(1j*phases))
 ang = np.linspace(0, np.pi/2, 1000)
 g = antf.get_relative_power(arr.get_AF(ang), clamp_min = -60)
 
-fig, ax = plt.subplots()
-ax.plot(ang, g)
-plt.show()
+antf.plot_pattern(g)
