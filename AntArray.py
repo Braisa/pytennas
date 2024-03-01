@@ -57,7 +57,7 @@ class AntArray:
             self.deltas = deltas
             self.pos = self.d * np.arange(self.N) + deltas
         
-    def get_AF(self, theta = np.linspace(0, 2*np.pi, 1000), alpha = 0.):
+    def get_AF(self, theta = np.linspace(0, 2*np.pi, 1000)):
         
         """
         
@@ -65,8 +65,6 @@ class AntArray:
         ----------
             theta : array
                 Visible angular range, in radians. Array factor will be computed for the specified angles.
-            alpha : float
-                Main lobe angular position, in radians. By default it is zero.
         
         Returns
         -------
@@ -75,30 +73,9 @@ class AntArray:
         
         """
         
-        eta = self.num * (np.cos(theta) - np.cos(alpha))
+        eta = self.num * np.cos(theta)
         AF = np.sum(self.w[n] * np.exp(1j*self.pos[n]*eta) for n in np.arange(self.N))
         return np.abs(AF)
-    
-    def get_relative_power(self, AF, clampdBi = -20.):
-        
-        """
-        
-        Parameters
-        ----------
-            AF : array
-                Array factor.
-            clampdBi : float
-                Minimum to which lower values of relative power are clamped. Allows selection of a region of interest.
-        
-        Returns
-        -------
-            dBi : array
-                Relative power in decibels over an isotropic radiator. Expressed as a function of the same argument as AF.
-        
-        """
-        
-        dBi = 10 * np.log10(AF / np.max(AF))
-        return np.clip(dBi, clampdBi, None)
     
     def estimate_deltas(self, theta = np.linspace(0, 2*np.pi, 1000), diff = None):
         
