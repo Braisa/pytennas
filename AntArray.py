@@ -42,12 +42,12 @@ class AntArray:
         if w is None and deltas is None:
             self.w = np.ones(N)
             self.N = N
-        elif deltas is None:
-            self.w = w
-            self.N = np.size(w)
-        else:
+        elif deltas is not None:
             self.w = np.ones(np.size(deltas))
             self.N = np.size(deltas)
+        else:
+            self.w = w
+            self.N = np.size(w)
         
         # Create element position array
         if deltas is None:
